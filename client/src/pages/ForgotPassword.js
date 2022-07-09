@@ -40,7 +40,7 @@ function ForgotPassword() {
             />
           </div>
           <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
-           <form onSubmit={formik.handleSubmit}>
+           <form onSubmit={formik.handleSubmit} autoComplete="off">
             <div className="w-full">
               <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">
                 Forgot password ?
@@ -50,14 +50,14 @@ function ForgotPassword() {
               </p>
               <Label>
           
-                <Input className="mt-1" type="email" placeholder="Enter your email" name="email" onChange={formik.handleChange}  value={formik.values.email} onBlur={formik.handleBlur}/>
+                <Input className="mt-1" style={formik.touched.email && formik.errors.email ? {color: '#f71665', borderColor: '#f71665', borderWidth: 2}: null} type="email" placeholder="Enter your email" name="email" onChange={formik.handleChange}  value={formik.values.email} onBlur={formik.handleBlur}/>
                 {formik.touched.email && formik.errors.email ? <span style={{color: '#f71665'}}>{formik.errors.email}</span>: null }
               </Label>
 
               {/*<Button tag={Link} to="/login" block className="mt-4">
                 Recover password
               </Button> */}
-              <Button type="submit" block className="mt-4">Recover Password</Button>
+              <Button type="submit" block className="mt-4" disabled={!(formik.isValid && formik.dirty)}>Recover Password</Button>
               <p className="mt-4">
                 <Link
                   className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"

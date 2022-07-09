@@ -1,5 +1,6 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Link } from 'react-router-dom'
+import axios from "axios";
 
 //import ImageLight from '../assets/img/create-account-office.jpeg'
 //import ImageDark from '../assets/img/create-account-office-dark.jpeg'
@@ -8,7 +9,18 @@ import { Input, Label, Button } from '@windmill/react-ui'
 import {useFormik} from "formik";
 import * as Yup from 'yup';
 function CreateAccount() {
-
+  const [register, setRegister] = useState(null);
+  const [errors, setErrors] = useState(false);
+  const validationSchema =  Yup.object({
+    fName: Yup.string().required('your first name is required').min(3, 'your first name must contain at least 3 characters'),
+    lName: Yup.string().required('your first name is required').min(3, 'your last name must contain at least 3 characters'),
+    email: Yup.string().required('your email is required').matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'you entered an invalid email'),
+    pwd: Yup.string().required('your password is required').matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/, 'Your password is not strong enough'),
+    retypePwd: Yup.string().required('You must retype your password').oneOf([Yup.ref('pwd')], 'both passwords must match') 
+  });
+  const onSubmit = (values)=>{
+    alert(JSON.stringify(values));
+  }
   const formik = useFormik({
     initialValues:{
       fName: '',
@@ -16,13 +28,23 @@ function CreateAccount() {
       email: '',
       pwd: ''
     },
-    validationSchema: Yup.object({
-      fName: Yup.string().required('your first name is required').min(3, 'your first name must contain at least 3 characters'),
-      lName: Yup.string().required('your first name is required').min(3, 'your last name must contain at least 3 characters'),
-      email: Yup.string().required('your email is required').matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'you entered an invalid email'),
-      pwd: Yup.string().required('your password is required').matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/, 'Your password is not strong enough'),
-      retypePwd: Yup.string().required('You must retype your password').oneOf([Yup.ref('pwd')], 'both passwords must match')    })
+    onSubmit,
+    validationSchema: validationSchema,
   });
+ 
+  onSubmit = async(values)=>{
+    const {retypePwd, ...data} = values;
+    // make a post request to the api and pass the form data in 
+    const response = await axios.post('http://localhost:5000/api/register', data).catch((err)=>{
+      if(err && err.response){
+        console.log('Issue conntecting to backend because ', err);
+        setErrors(true)
+      }
+    });
+    if(response && response.data){
+      setRegister(response.data.message)
+    }
+  }
 
   return (
     <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
@@ -47,38 +69,43 @@ function CreateAccount() {
           <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
             <form onSubmit={formik.handleSubmit} autoComplete="off">
             <div className="w-full">
-              <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
+              {/* display success message */}
+               { register ? <p className="text-lime-600">{register}</p> : ""}
+
+                 {/* display any messages related to contacting the server */}
+                {errors ? (
+                  <p className="text-orange-500">Issue contacting the server</p>
+                ) : (
+                  <p className="text-lime-500">Successfully contacted the server</p>
+                )}
+              <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">
                 Create account
               </h1>
               <Label className="mt-4">
-                <span>First Name</span>
-                <Input className="mt-1" placeholder="Enter your first name" name="fName" onChange={formik.handleChange}  value={formik.values.fName} onBlur={formik.handleBlur}/>
+                <Input className="mt-1" style={formik.touched.fName && formik.errors.fName ? {borderWidth: 2, borderColor: '#f71665', color: '#f71665'} : null}
+                   placeholder="Enter your first name" name="fName" onChange={formik.handleChange}  value={formik.values.fName} onBlur={formik.handleBlur}/>
                 {formik.touched.fName && formik.errors.fName ? <span style={{color: '#f71665'}}>{formik.errors.fName}</span> : null}
               </Label>
 
               <Label className="mt-4">
-                <span>Last Name</span>
-                <Input className="mt-1" placeholder="Enter your last name" name="lName" onChange={formik.handleChange}  value={formik.values.lName} onBlur={formik.handleBlur}/>
+                <Input className="mt-1"  style={formik.touched.lName && formik.errors.lName ? {borderWidth: 2, borderColor: '#f71665', color: '#f71665'}: null} placeholder="Enter your last name" name="lName" onChange={formik.handleChange}  value={formik.values.lName} onBlur={formik.handleBlur}/>
                 {formik.touched.lName && formik.errors.lName ? <span style={{color: '#f71665'}}>{formik.errors.lName}</span> : null}
 
               </Label>
 
               <Label className="mt-4">
-                <span>Email</span>
-                <Input className="mt-1" placeholder="Enter your email" name="email" onChange={formik.handleChange}  value={formik.values.email} onBlur={formik.handleBlur}/>
+                <Input className="mt-1"  style={formik.touched.email && formik.errors.email ? {borderWidth: 2, borderColor: '#f71665', color: '#f71665'}: null} placeholder="Enter your email" name="email" onChange={formik.handleChange}  value={formik.values.email} onBlur={formik.handleBlur}/>
                 {formik.touched.email && formik.errors.email ? <span style={{color: '#f71665'}}>{formik.errors.email}</span> : null}
 
               </Label>
               
               <Label className="mt-4">
-                <span>Password</span>
-                <Input className="mt-1" placeholder="Create your password" name="pwd" type="password"  onChange={formik.handleChange}  value={formik.values.pwd} onBlur={formik.handleBlur}/>
+                <Input className="mt-1"  style={formik.touched.pwd && formik.errors.pwd ? {borderWidth: 2, borderColor: '#f71665', color: '#f71665'}: null} placeholder="Create your password" name="pwd" type="password"  onChange={formik.handleChange}  value={formik.values.pwd} onBlur={formik.handleBlur}/>
                 {formik.touched.pwd && formik.errors.pwd ? <span style={{color: '#f71665'}}>{formik.errors.pwd}</span> : null}
 
               </Label>
               <Label className="mt-4">
-                <span>Confirm password</span>
-                <Input className="mt-1" placeholder="Retype your password" name="retypePwd" type="password" onChange={formik.handleChange}  value={formik.values.retypePwd} onBlur={formik.handleBlur} />
+                <Input className="mt-1"  style={formik.touched.retypePwd && formik.errors.retypePwd ? {borderWidth: 2, borderColor: '#f71665', color: '#f71665'}: null} placeholder="Retype your password" name="retypePwd" type="password" onChange={formik.handleChange}  value={formik.values.retypePwd} onBlur={formik.handleBlur} />
                 {formik.touched.retypePwd && formik.errors.retypePwd ? <span style={{color: '#f71665'}}>{formik.errors.retypePwd}</span> : null}
 
               </Label>
@@ -93,7 +120,7 @@ function CreateAccount() {
               {/*<Button tag={Link} to="/login" block className="mt-4">
                 Create account
               </Button> */}
-              <Button type="submit" block className="mt-4">Create Account</Button>
+              <Button type="submit" block className="mt-4" disabled={!(formik.isValid && formik.disabled)}>Create Account</Button>
               <hr className="my-8" />
 
               <Button block layout="outline">

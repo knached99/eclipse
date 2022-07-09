@@ -9,6 +9,8 @@ import {useFormik} from "formik";
 import * as Yup from 'yup';
 
 function Login() {
+
+
   // Login Validation 
   const formik = useFormik({
     initialValues:{
@@ -18,8 +20,10 @@ function Login() {
     validationSchema: Yup.object({
       email: Yup.string().required('your email is required').matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'you entered an invalid email'),
       pwd: Yup.string().required('your password is required')
-    })
+    }),
+  
   });
+
 
 
   return (
@@ -45,16 +49,14 @@ function Login() {
           <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
           <form autoComplete='off' onSubmit={formik.handleSubmit}>
             <div className="w-full">
-              <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-gray-200">Login to your account</h1>
+              <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">Login to your account</h1>
               <Label>
-                <span className="text-white font-semibold">Email</span>
-                <Input className="mt-1" type="email" placeholder="Enter your email" name="email" onChange={formik.handleChange}  value={formik.values.email} onBlur={formik.handleBlur}/>
+                <Input className="mt-1" style={formik.touched.email && formik.errors.email ?{color: '#f71665', borderWidth: 2, borderColor: '#f71665'} : null} placeholder="Enter your email" name="email" onChange={formik.handleChange}  value={formik.values.email} onBlur={formik.handleBlur}/>
                 {formik.touched.email && formik.errors.email ? <span style={{color: '#f71665'}}>{formik.errors.email}</span>: null }
               </Label>
 
               <Label className="mt-4">
-                <span className='text-white font-semibold'>Password</span>
-                <Input className="mt-1" type="password" placeholder="Enter your password" name="pwd" onChange={formik.handleChange}  value={formik.values.pwd} onBlur={formik.handleBlur} />
+                <Input className="mt-1"  style={formik.touched.pwd && formik.errors.pwd ?{color: '#f71665', borderWidth: 2, borderColor: '#f71665'} : null} type="password" placeholder="Enter your password" name="pwd" onChange={formik.handleChange}  value={formik.values.pwd} onBlur={formik.handleBlur} />
                 {formik.touched.pwd && formik.errors.pwd ? <span style={{color: '#f71665'}}>{formik.errors.pwd}</span>: null }
 
               </Label>
@@ -62,7 +64,7 @@ function Login() {
              {/* <Button className="mt-4" block tag={Link} to="/app">
                 Log in
   </Button> */}
-              <Button className="mt-4" type="submit" block>Login</Button>
+              <Button className="mt-4" type="submit" block disabled={!(formik.isValid && formik.dirty)}>Login</Button>
 
               <hr className="my-8" />
 
