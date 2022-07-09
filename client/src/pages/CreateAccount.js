@@ -31,8 +31,8 @@ function CreateAccount() {
     onSubmit,
     validationSchema: validationSchema,
   });
- 
-  onSubmit = async(values)=>{
+ // This was causing an issue
+ /* onSubmit = async(values)=>{
     const {retypePwd, ...data} = values;
     // make a post request to the api and pass the form data in 
     const response = await axios.post('http://localhost:5000/api/register', data).catch((err)=>{
@@ -44,7 +44,7 @@ function CreateAccount() {
     if(response && response.data){
       setRegister(response.data.message)
     }
-  }
+  } */
 
   return (
     <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
