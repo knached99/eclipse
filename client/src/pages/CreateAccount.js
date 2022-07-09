@@ -10,7 +10,9 @@ import {useFormik} from "formik";
 import * as Yup from 'yup';
 function CreateAccount() {
   const [register, setRegister] = useState(null);
-  const [errors, setErrors] = useState(false);
+  const [errors, setErrors] = useState(null);
+  const [loading, setLoading] = useState(null);
+  //const [flashMsg, setFlashMsg] = useState(null);
   const validationSchema =  Yup.object({
     fName: Yup.string().required('your first name is required').min(3, 'your first name must contain at least 3 characters'),
     lName: Yup.string().required('your first name is required').min(3, 'your last name must contain at least 3 characters'),
@@ -18,8 +20,22 @@ function CreateAccount() {
     pwd: Yup.string().required('your password is required').matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/, 'Your password is not strong enough'),
     retypePwd: Yup.string().required('You must retype your password').oneOf([Yup.ref('pwd')], 'both passwords must match') 
   });
-  const onSubmit = (values)=>{
-    alert(JSON.stringify(values));
+  const onSubmit = async (values)=>{
+  //alert(JSON.stringify(values));
+  const {retypePwd, ...data} = values;
+    setLoading(true);
+    const response =  await axios.post('http://localhost:5000/api/v1/register', data).catch((err)=>{
+      if(err && err.response){
+
+       // alert('An unknown error occurred: ', err);
+        console.log('Error ', err);
+        setErrors('Error creating your account');
+      }
+    });
+    if(response && response.data){
+      console.log(response.data.message)
+      setRegister(response.data.message)
+    } 
   }
   const formik = useFormik({
     initialValues:{
@@ -28,23 +44,11 @@ function CreateAccount() {
       email: '',
       pwd: ''
     },
+    validateOnBlur: true,
     onSubmit,
     validationSchema: validationSchema,
   });
- // This was causing an issue
- /* onSubmit = async(values)=>{
-    const {retypePwd, ...data} = values;
-    // make a post request to the api and pass the form data in 
-    const response = await axios.post('http://localhost:5000/api/register', data).catch((err)=>{
-      if(err && err.response){
-        console.log('Issue conntecting to backend because ', err);
-        setErrors(true)
-      }
-    });
-    if(response && response.data){
-      setRegister(response.data.message)
-    }
-  } */
+
 
   return (
     <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
@@ -70,14 +74,12 @@ function CreateAccount() {
             <form onSubmit={formik.handleSubmit} autoComplete="off">
             <div className="w-full">
               {/* display success message */}
-               { register ? <p className="text-lime-600">{register}</p> : ""}
+               { register ? "" : <p style={{color: 'green'}}>{register}</p>}
 
                  {/* display any messages related to contacting the server */}
-                {errors ? (
-                  <p className="text-orange-500">Issue contacting the server</p>
-                ) : (
-                  <p className="text-lime-500">Successfully contacted the server</p>
-                )}
+               
+             
+                
               <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">
                 Create account
               </h1>
@@ -119,8 +121,30 @@ function CreateAccount() {
 
               {/*<Button tag={Link} to="/login" block className="mt-4">
                 Create account
-              </Button> */}
-              <Button type="submit" block className="mt-4" disabled={!(formik.isValid && formik.disabled)}>Create Account</Button>
+              </Button> 
+             
+              */}
+                {errors ? (
+                  <p  style={{color: 'red'}}>{errors}</p>
+                ) : (
+                  null
+                )}
+              
+                  {loading ? (
+               <button type="submit" block className="bg-gray-600 text-white font-bold py-2 px-4 rounded" disabled={!(formik.isValid && formik.dirty && loading)}>
+                loading, please wait...
+                </button>
+
+                  ):
+                  <Button type="submit" block className="mt-4" disabled={!(formik.isValid && formik.dirty)}>
+                    Create your account
+                  </Button>
+                }
+
+             
+
+             
+
               <hr className="my-8" />
 
               <Button block layout="outline">

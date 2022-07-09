@@ -1,32 +1,28 @@
-const express = require('express');
-const User = require('../models/User');
+const express = require("express");
+const User = require("../models/usersModel");
+
 const router = express.Router();
 
-// Handle account creation logic 
+router.post("/register", async (req, res) => {
+  const { fName, lName, email, pwd } = req.body;
 
-router.post('/register', async (req, res)=>{
-    const { fName, lName, email, pwd } = req.body;
-
-    // Check if user exists 
-    const userExists = await User.findOne({where: {email}}).catch( (err)=>{
-        console.log('Query error -> ', err);
-    } );
-
-    // if user exists 
-    if(userExists){
-        return res.status(409).json({message: 'A user with that email already exists'});
+  const alreadyExistsUser = await User.findOne({email}).catch(
+    (err) => {
+      console.log("Error: ", err);
     }
+  );
 
-    // Sign user up
-    const newUser = new User({fName, lName, email, pwd});
+  if (alreadyExistsUser) {
+    return res.status(409).json({ message: "User with email already exists!" });
+  }
 
-    const savedUser = await newUser.save().catch((err)=>{
-        console.log('Account Creation Error: ', err);
-        res.status(500).json({error: 'There was an issue creating your account at the moment'});
-    });
-    if(savedUser){
-        res.json({message: 'Your account was successfully created!'})
-    }
+  const newUser = new User({ fName, lName, email, pwd });
+  const savedUser = await newUser.save().catch((err) => {
+    console.log("Error: ", err);
+    res.status(500).json({ error: "Cannot register user at the moment!" });
+  });
+
+  if (savedUser) res.json({ message: "Thanks for registering" });
 });
 
 module.exports = router;

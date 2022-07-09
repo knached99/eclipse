@@ -4,12 +4,12 @@ const router = express.Router();
 // Account registration endpoint 
 app.post('/signup', (request, response)=>{
     // Hash the password and salt it 10 times
-    bcrypt.hash(request.body.password, 10)
+    bcrypt.hash(request.body.pwd, 10)
     .then((hashedPassword)=>{
       // Create a new user instance and save the data
       const user = new User({
         email: request.body.email, 
-        password: hashedPassword,
+        pwd: hashedPassword,
       });
       // Save the new user 
       user.save()
