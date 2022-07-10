@@ -1,15 +1,15 @@
 import { lazy } from 'react'
 
 // use lazy for better code splitting, a.k.a. load faster
-const Dashboard = lazy(() => import('../pages/Dashboard'))
-const Forms = lazy(() => import('../pages/Forms'))
-const Cards = lazy(() => import('../pages/Cards'))
-const Charts = lazy(() => import('../pages/Charts'))
-const Buttons = lazy(() => import('../pages/Buttons'))
-const Modals = lazy(() => import('../pages/Modals'))
-const Tables = lazy(() => import('../pages/Tables'))
-const Page404 = lazy(() => import('../pages/404'))
-const Blank = lazy(() => import('../pages/Blank'))
+const Dashboard = lazy(() => import('../pages/user/dashboard'))
+const Forms = lazy(() => import('../pages/dont_edit/Forms'))
+const Cards = lazy(() => import('../pages/dont_edit/Cards'))
+const Charts = lazy(() => import('../pages/dont_edit/Charts'))
+const Buttons = lazy(() => import('../pages/dont_edit/Buttons'))
+const Modals = lazy(() => import('../pages/dont_edit/Modals'))
+const Tables = lazy(() => import('../pages/dont_edit/Tables'))
+const Page404 = lazy(() => import('../pages/dont_edit/404'))
+const Blank = lazy(() => import('../pages/dont_edit/Blank'))
 
 /**
  * ⚠ These are internal routes!

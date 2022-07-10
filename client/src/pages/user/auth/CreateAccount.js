@@ -4,7 +4,7 @@ import axios from "axios";
 
 //import ImageLight from '../assets/img/create-account-office.jpeg'
 //import ImageDark from '../assets/img/create-account-office-dark.jpeg'
-import { GithubIcon, TwitterIcon } from '../icons'
+import { GithubIcon, TwitterIcon } from '../../../icons'
 import { Input, Label, Button } from '@windmill/react-ui'
 import {useFormik} from "formik";
 import * as Yup from 'yup';

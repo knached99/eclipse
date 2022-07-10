@@ -8,7 +8,7 @@ import Main from '../containers/Main'
 import ThemedSuspense from '../components/ThemedSuspense'
 import { SidebarContext } from '../context/SidebarContext'
 
-const Page404 = lazy(() => import('../pages/404'))
+const Page404 = lazy(() => import('../pages/user/errors/404'))
 
 function Layout() {
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext)
