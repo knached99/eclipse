@@ -6,19 +6,20 @@ const router = express.Router();
 
 router.post("/login", async (req, res) => {
   const { email, pwd } = req.body;
-
-  const userWithEmail = await User.findOne({ where: { email } }).catch(
+  let query = {email: email};
+  const userWithEmail = await User.findOne(query).catch(
     (err) => {
       console.log("Error: ", err);
     }
   );
 
+
   if (!userWithEmail)
     return res
       .status(400)
-      .json({ message: "Email or password does not match!" });
+      .json({ message: "An account with this email does not exist" });
 
-  if (userWithEmail.password !== password)
+  if (userWithEmail.pwd !== pwd)
     return res
       .status(400)
       .json({ message: "Email or password does not match!" });

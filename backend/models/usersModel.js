@@ -18,7 +18,8 @@ type: String,
 required: [true, 'your email is required'],
 unique: [true, 'this email is taken by another user'],
 },
-password: {
+
+pwd: {
     type: String,
     required: [true, 'your password is required'],
     unique: false,

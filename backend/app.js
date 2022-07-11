@@ -5,9 +5,10 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 require("dotenv").config();
 require("./auth/passport");
-
-require("./models/usersModel");
-
+const User = require("./models/usersModel");
+const dbConnect = require('./database/dbConnect');
+// Establish database connection
+dbConnect();
 const middlewares = require("./middlewares");
 const api = require("./api");
 
@@ -23,7 +24,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({
-    message: "✨👋🌎🌍🌏✨",
+    message: "🦄🌈✨👋🌎🌍🌏✨🌈🦄",
   });
 });
 

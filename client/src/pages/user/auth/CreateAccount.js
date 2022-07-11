@@ -9,7 +9,7 @@ import { Input, Label, Button } from '@windmill/react-ui'
 import {useFormik} from "formik";
 import * as Yup from 'yup';
 function CreateAccount() {
-  const [register, setRegister] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [errors, setErrors] = useState(null);
   const [loading, setLoading] = useState(null);
   //const [flashMsg, setFlashMsg] = useState(null);
@@ -20,8 +20,27 @@ function CreateAccount() {
     pwd: Yup.string().required('your password is required').matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/, 'Your password is not strong enough'),
     retypePwd: Yup.string().required('You must retype your password').oneOf([Yup.ref('pwd')], 'both passwords must match') 
   });
-  const onSubmit = async (values)=>{
-  //alert(JSON.stringify(values));
+
+  const onSubmit = async(values)=>{
+    const {retypePwd, ...data} = values;
+
+    const response = await axios
+    .post('http://localhost:5000/api/v1/register', data) 
+    .catch((err)=>{
+      setLoading(true);
+      if(err && err.response) setErrors(err.response.data.message);
+      setLoading(false);
+      setSuccess(null);
+    });
+    if(response && response.data){
+      setErrors(null);
+      setLoading(true);
+      setSuccess(response.data.message);
+      formik.resetForm();
+    }
+  };
+ /* const onSubmit = async (values)=>{
+
   const {retypePwd, ...data} = values;
     setLoading(true);
     const response =  await axios.post('http://localhost:5000/api/v1/register', data).catch((err)=>{
@@ -36,7 +55,7 @@ function CreateAccount() {
       console.log(response.data.message)
       setRegister(response.data.message)
     } 
-  }
+  } */
   const formik = useFormik({
     initialValues:{
       fName: '',
@@ -74,7 +93,6 @@ function CreateAccount() {
             <form onSubmit={formik.handleSubmit} autoComplete="off">
             <div className="w-full">
               {/* display success message */}
-               { register ? "" : <p style={{color: 'green'}}>{register}</p>}
 
                  {/* display any messages related to contacting the server */}
                
@@ -82,7 +100,9 @@ function CreateAccount() {
                 
               <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">
                 Create account
-              </h1>
+              </h1> 
+              {!errors && <p className="text-green-400">{success ? success : ""} </p>}
+               {!success && <p className="text-red-400">{errors ? errors : ""}</p>}
               <Label className="mt-4">
                 <Input className="mt-1" style={formik.touched.fName && formik.errors.fName ? {borderWidth: 2, borderColor: '#f71665', color: '#f71665'} : null}
                    placeholder="Enter your first name" name="fName" onChange={formik.handleChange}  value={formik.values.fName} onBlur={formik.handleBlur}/>
@@ -119,27 +139,19 @@ function CreateAccount() {
                 </span>
               </Label>
 
-              {/*<Button tag={Link} to="/login" block className="mt-4">
-                Create account
-              </Button> 
-             
-              */}
-                {errors ? (
-                  <p  style={{color: 'red'}}>{errors}</p>
-                ) : (
-                  null
-                )}
-              
-                  {loading ? (
-               <button type="submit" block className="bg-gray-600 text-white font-bold py-2 px-4 rounded" disabled={!(formik.isValid && formik.dirty && loading)}>
-                loading, please wait...
-                </button>
 
-                  ):
+              {!success && loading && <Button block disabled className="mt-4">
+              <img src="https://mygrant.ors.hawaii.edu/rCOI/images/loading.gif" style={{width: 30, height: 30, margin: 5}} />
+                </Button>}:
                   <Button type="submit" block className="mt-4" disabled={!(formik.isValid && formik.dirty)}>
                     Create your account
                   </Button>
-                }
+                
+
+
+
+                  
+                
 
              
 

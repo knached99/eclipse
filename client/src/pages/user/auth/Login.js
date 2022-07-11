@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import axios from "axios";
 
 //import ImageLight from '../assets/img/login-office.jpeg'
 //import ImageDark from '../assets/img/login-office-dark.jpeg'
@@ -9,14 +10,28 @@ import {useFormik} from "formik";
 import * as Yup from 'yup';
 
 function Login() {
-
-
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const onSubmit = async(values)=>{
+    setError(null);
+    const response = await axios
+    .post('http://localhost:5000/api/v1/login', values)
+    .catch((err)=>{
+      if(err && err.response)
+      setError(err.response.data.message);
+    });
+    if(response){
+      setSuccess('Welcome back, authenticating...');
+    }
+  };
   // Login Validation 
   const formik = useFormik({
     initialValues:{
       email: '',
       pwd: ''
     },
+    validationOnBlur: true, 
+    onSubmit,
     validationSchema: Yup.object({
       email: Yup.string().required('your email is required').matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'you entered an invalid email'),
       pwd: Yup.string().required('your password is required')
@@ -50,6 +65,9 @@ function Login() {
           <form autoComplete='off' onSubmit={formik.handleSubmit}>
             <div className="w-full">
               <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">Login to your account</h1>
+              <p className="text-red-400">{error ? error : ""}</p>
+              <p className="text-green-400">{success ? success : ''}</p>
+
               <Label>
                 <Input className="mt-1" style={formik.touched.email && formik.errors.email ?{color: '#f71665', borderWidth: 2, borderColor: '#f71665'} : null} placeholder="Enter your email" name="email" onChange={formik.handleChange}  value={formik.values.email} onBlur={formik.handleBlur}/>
                 {formik.touched.email && formik.errors.email ? <span style={{color: '#f71665'}}>{formik.errors.email}</span>: null }
