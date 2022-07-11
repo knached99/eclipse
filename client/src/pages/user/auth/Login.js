@@ -21,7 +21,7 @@ function Login() {
       setError(err.response.data.message);
     });
     if(response){
-      setSuccess('Welcome back, authenticating...');
+      setSuccess(response.data.message);
     }
   };
   // Login Validation 

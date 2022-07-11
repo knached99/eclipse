@@ -1,5 +1,6 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Link } from 'react-router-dom'
+import axios from "axios";
 
 /*import ImageLight from '../assets/img/forgot-password-office.jpeg'
 import ImageDark from '../assets/img/forgot-password-office-dark.jpeg'
@@ -9,11 +10,29 @@ import {useFormik} from "formik";
 import * as Yup from 'yup';
 
 function ForgotPassword() {
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const onSubmit = async(values)=>{
+    setError(null);
+    const response = await axios 
+    .post('http://localhost:5000/api/v1/forgotpwd', values)
+    .catch((err)=>{
+      if(err && err.response) 
+      setError(err.response.data.message);
+      setSuccess(null);
+    });
+    if(response){
+      setSuccess(response.data.message);
+    }
+
+  }
   const formik = useFormik({
     initialValues:{
       email: '',
     
     },
+    validationOnBlur: true, 
+    onSubmit, 
     validationSchema: Yup.object({
       email: Yup.string().required('your email is required').matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'you entered an invalid email')
     })
@@ -45,6 +64,8 @@ function ForgotPassword() {
               <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">
                 Forgot password ?
               </h1>
+              <p className="text-yellow-200">{error ? error : ""}</p>
+              <p className="text-green-300">{success ? success : ""}</p>
               <p className='mb-4 text-sm font-semibold text-gray-600 dark:text-gray-300'>
                 No worries! Just follow the instructions and your password will be reset in no time
               </p>
