@@ -101,8 +101,8 @@ function CreateAccount() {
               <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">
                 Create account
               </h1> 
-              {!errors && <p className="text-green-400">{success ? success : ""} </p>}
-               {!success && <p className="text-red-400">{errors ? errors : ""}</p>}
+              {!errors && <p className="text-green-400 font-semibold">{success ? success : ""} </p>}
+               {!success && <p className="text-red-400 font-semibold">{errors ? errors : ""}</p>}
               <Label className="mt-4">
                 <Input className="mt-1" style={formik.touched.fName && formik.errors.fName ? {borderWidth: 2, borderColor: '#f71665', color: '#f71665'} : null}
                    placeholder="Enter your first name" name="fName" onChange={formik.handleChange}  value={formik.values.fName} onBlur={formik.handleBlur}/>

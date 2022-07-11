@@ -65,8 +65,8 @@ function Login() {
           <form autoComplete='off' onSubmit={formik.handleSubmit}>
             <div className="w-full">
               <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">Login to your account</h1>
-              <p className="text-red-400">{error ? error : ""}</p>
-              <p className="text-green-400">{success ? success : ''}</p>
+              <p className="text-red-400 font-semibold">{error ? error : ""}</p>
+              <p className="text-green-400 font-semibold">{success ? success : ''}</p>
 
               <Label>
                 <Input className="mt-1" style={formik.touched.email && formik.errors.email ?{color: '#f71665', borderWidth: 2, borderColor: '#f71665'} : null} placeholder="Enter your email" name="email" onChange={formik.handleChange}  value={formik.values.email} onBlur={formik.handleBlur}/>

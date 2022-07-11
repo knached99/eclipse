@@ -64,8 +64,8 @@ function ForgotPassword() {
               <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">
                 Forgot password ?
               </h1>
-              <p className="text-yellow-200">{error ? error : ""}</p>
-              <p className="text-green-300">{success ? success : ""}</p>
+              <p className="text-orange-400 font-semibold">{error ? error : ""}</p>
+              <p className="text-green-400 font-semibold">{success ? success : ""}</p>
               <p className='mb-4 text-sm font-semibold text-gray-600 dark:text-gray-300'>
                 No worries! Just follow the instructions and your password will be reset in no time
               </p>
