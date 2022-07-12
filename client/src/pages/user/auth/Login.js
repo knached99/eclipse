@@ -24,6 +24,7 @@ function Login() {
     .catch((err)=>{
       if(err && err.response)
       setError(err.response.data.message);
+      setOpen(true);
     });
     if(response){
       setSuccess(response.data.message);

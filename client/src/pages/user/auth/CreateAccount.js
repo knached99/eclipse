@@ -33,6 +33,7 @@ function CreateAccount() {
       if(err && err.response) setErrors(err.response.data.message);
       setLoading(false);
       setSuccess(null);
+      setOpen(true);
     });
     if(response && response.data){
       setErrors(null);

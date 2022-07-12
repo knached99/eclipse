@@ -11,7 +11,7 @@ import { ExclamationIcon } from '@heroicons/react/outline'
 function ForgotPassword() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null)
   const onSubmit = async(values)=>{
     setError(null);
@@ -21,6 +21,7 @@ function ForgotPassword() {
       if(err && err.response) 
       setError(err.response.data.message);
       setSuccess(null);
+      setOpen(true);
     });
     if(response){
       setSuccess(response.data.message);
