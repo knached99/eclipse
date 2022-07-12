@@ -6,7 +6,7 @@ import { GithubIcon, TwitterIcon } from '../../../icons'
 import { Label, Input, Button } from '@windmill/react-ui'
 import {useFormik} from "formik";
 import { Dialog, Transition } from '@headlessui/react'
-import { ExclamationIcon } from '@heroicons/react/outline'
+import { ExclamationIcon, CheckCircleIcon } from '@heroicons/react/outline'
 import * as Yup from 'yup';
 
 function Login() {
@@ -24,6 +24,7 @@ function Login() {
     .catch((err)=>{
       if(err && err.response)
       setError(err.response.data.message);
+      setSuccess(null);
       setOpen(true);
     });
     if(response){
@@ -72,7 +73,6 @@ function Login() {
           <form autoComplete='off' onSubmit={formik.handleSubmit}>
             <div className="w-full">
               <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">Login to your account</h1>
-              <p className="text-green-400 font-semibold">{success ? success : ''}</p>
 
               <Label>
                 <Input className="mt-1" style={formik.touched.email && formik.errors.email ?{color: '#f71665', borderWidth: 2, borderColor: '#f71665'} : null} placeholder="Enter your email" name="email" onChange={formik.handleChange}  value={formik.values.email} onBlur={formik.handleBlur}/>
@@ -128,7 +128,7 @@ function Login() {
     {/* Modal Popup for errors */}
    
 
-    <Transition.Root show={error ? open : false} as={Fragment}>
+    <Transition.Root show={error ? open : success ? open : false} as={Fragment}>
       <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
         <Transition.Child
           as={Fragment}
@@ -157,15 +157,17 @@ function Login() {
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                      <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
+                      {! success &&  <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" /> }
+                      {! error &&  <CheckCircleIcon className="h-6 w-6 text-green-600" aria-hidden="true" /> }
                     </div>
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                       <Dialog.Title as="h3" className="text-lg leading-6 font-black text-gray-900">
-                      Login Error 
+                        {!success && 'Login Error'}
+                        {!error && 'Login Success'}
                       </Dialog.Title> 
                       <div className="mt-2">
-                      <p className="text-red-400 font-semibold">{error ? error : ""}</p>
-                      
+                      {!success && <p className="text-red-400 font-semibold">{error ? error : ""}</p>}
+                      {!error && <p className="text-green-400 font-semibold">{success ? success : ""} </p>}                      
                       </div>
                     </div>
                   </div>

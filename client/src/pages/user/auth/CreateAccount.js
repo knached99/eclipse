@@ -6,7 +6,7 @@ import { GithubIcon, TwitterIcon } from '../../../icons'
 import { Input, Label, Button } from '@windmill/react-ui'
 import {useFormik} from "formik";
 import { Dialog, Transition } from '@headlessui/react'
-import { ExclamationIcon } from '@heroicons/react/outline'
+import { ExclamationIcon, CheckCircleIcon } from '@heroicons/react/outline'
 import * as Yup from 'yup';
 function CreateAccount() {
   const [success, setSuccess] = useState(null);
@@ -105,7 +105,6 @@ function CreateAccount() {
               <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">
                 Create account
               </h1> 
-              {!errors && <p className="text-green-400 font-semibold">{success ? success : ""} </p>}
               <Label className="mt-4">
                 <Input className="mt-1" style={formik.touched.fName && formik.errors.fName ? {borderWidth: 2, borderColor: '#f71665', color: '#f71665'} : null}
                    placeholder="Enter your first name" name="fName" onChange={formik.handleChange}  value={formik.values.fName} onBlur={formik.handleBlur}/>
@@ -143,12 +142,16 @@ function CreateAccount() {
               </Label>
 
 
-              {!success && loading && <Button block disabled className="mt-4">
-              <img src="https://mygrant.ors.hawaii.edu/rCOI/images/loading.gif" style={{width: 30, height: 30, margin: 5}} />
-                </Button>}:
-                  <Button type="submit" block className="mt-4" disabled={!(formik.isValid && formik.dirty)}>
-                    Create your account
-                  </Button>
+              { !success && loading && <Button block disabled className="mt-4">
+              <img src="https://mygrant.ors.hawaii.edu/rCOI/images/loading.gif" style={{width: 30, height: 30, margin: 5}} /> 
+                 
+                </Button>
+                }: {!success && !loading &&
+                 <Button type="submit" block className="mt-4" disabled={!(formik.isValid && formik.dirty)}>
+                Create your account
+              </Button>
+                }
+                 
                 
               <hr className="my-8" />
 
@@ -179,7 +182,7 @@ function CreateAccount() {
        {/* Modal Popup for errors */}
    
 
-       <Transition.Root show={errors ? open : false} as={Fragment}>
+       <Transition.Root show={errors ? open : success ? open : false} as={Fragment}>
       <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
         <Transition.Child
           as={Fragment}
@@ -208,14 +211,18 @@ function CreateAccount() {
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                      <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
+                     {!success &&  <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />}
+                     {!errors && <CheckCircleIcon className="h-6 text-green-500" aria-hidden="true"/>}
                     </div>
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                       <Dialog.Title as="h3" className="text-lg leading-6 font-black text-gray-900">
-                      Signup Error 
+                      {!success && 'Signup Error'}
+                      {!errors && 'Signup Success'}
                       </Dialog.Title> 
                       <div className="mt-2">
                       {!success && <p className="text-red-400 font-semibold">{errors ? errors : ""}</p>}
+                      {!errors && <p className="text-green-400 font-semibold">{success ? success : ""} </p>}
+
                       
                       </div>
                     </div>

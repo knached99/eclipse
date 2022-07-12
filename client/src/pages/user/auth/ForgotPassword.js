@@ -6,7 +6,7 @@ import { Label, Input, Button } from '@windmill/react-ui'
 import {useFormik} from "formik";
 import * as Yup from 'yup';
 import { Dialog, Transition } from '@headlessui/react'
-import { ExclamationIcon } from '@heroicons/react/outline'
+import { ExclamationIcon, CheckCircleIcon } from '@heroicons/react/outline'
 
 function ForgotPassword() {
   const [error, setError] = useState(null);
@@ -67,7 +67,7 @@ function ForgotPassword() {
               <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">
                 Forgot password ?
               </h1>
-              <p className="text-green-400 font-semibold">{success ? success : ""}</p>
+           
               <p className='mb-4 text-sm font-semibold text-gray-600 dark:text-gray-300'>
                 No worries! Just follow the instructions and your password will be reset in no time
               </p>
@@ -99,7 +99,7 @@ function ForgotPassword() {
        {/* Modal Popup for errors */}
    
 
-       <Transition.Root show={error ? open : false} as={Fragment}>
+       <Transition.Root show={error ? open : success ? open : false} as={Fragment}>
       <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
         <Transition.Child
           as={Fragment}
@@ -128,15 +128,17 @@ function ForgotPassword() {
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                      <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
+                      {!success && <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />}
+                     {!error && <CheckCircleIcon className="h-6 w-6 text-green-500" aria-hidden="true"/>}
                     </div>
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                       <Dialog.Title as="h3" className="text-lg leading-6 font-black text-gray-900">
-                       Password Reset Error 
+                       {!success && 'Password Reset Error '}
+                       {!error && 'Next Steps'}
                       </Dialog.Title> 
                       <div className="mt-2">
                       <p className="text-red-400 font-semibold">{error ? error : ""}</p>
-                      
+                      <p className="text-green-400 font-semibold">{success ? success : ""}</p>
                       </div>
                     </div>
                   </div>
