@@ -1,30 +1,28 @@
 const express = require("express");
 const User = require("../models/usersModel");
-const jwt = require("jsonwebtoken");
 const nodemailer = require('nodemailer');
 const router = express.Router();
 
-router.post('/forgotpwd', async(req, res)=>{
 
+router.post('/forgotpwd', async(req, res)=>{
   const {email} = req.body;
-   let query = {email: email};
-   const userExists = await User.findOne(query).catch((err)=>{
-    console.log('Query Error ' + err);
-    res.status(500).json({error: 'Query errorr occurred ' + err});
-   });
-   if(!userExists){
+
+  const userExists = await User.findOne({email : email}).catch((err)=>{
+    console.log('QUERY ERROR ' + err);
+  });
+
+  if(!userExists){
     return res.status(409).json({message: 'An account with that email does not exist'});
-   }
-   // Create 6 digit code 
-   let code = Math.floor(100000 + Math.random() * 900000);
-   let myQuery = {email: req.body.email};
-   let newCode = {$set: {verificationCode: code}};
-   const newUser = new User({email});
-   const updateCode = await newUser.updateOne(myQuery, newCode,  function(err, res){
-    if(err){
-      console.log('Query Error' + err);
-      return res.status(500).json({error: 'Update query error ' + err});
-    }
+  }
+  else{
+    // Define new user Object 
+    const newUser = new User ({email});
+    let code = Math.floor(100000 + Math.random() * 900000);
+    const updateCode = await newUser.updateOne({email: email}, {$set: {verificationCode: code}}).catch((err)=>{
+      console.log('Update Query Error ' + err);
+      return res.status(409).json({message: 'Update Query Error' + err});
+      
+    });
     if(updateCode){
       let transporter = nodemailer.createTransport({
         host: "smtp.mailtrap.io",
@@ -34,25 +32,25 @@ router.post('/forgotpwd', async(req, res)=>{
           pass: "41445c2690e986"
         }
       });
-      
       let mailOptions = {
         from: 'f73748fdfbd962@inbox.mailtrap.io',
         to: req.body.email,
-        subject: 'Account Recovery',
-        text: 'Hey, looks like you\'ve initiated an account recovery, please enter this six-digit code to continue ' + code
+        subject: 'Account Verification',
+        text: 'Hey, we\'ve recieved a password reset request from you, please enter this six digit verification code to continue: ' + code
       };
       transporter.sendMail(mailOptions, function(error, info){
-        if(error){
-          console.log('Email error ' + error);
-          return res.status(500).json({error: 'There was an issue sending your verification code'});
-        }
-        else{
+        if (error) {
+          console.log(error);
+          res.status(500).json({ error: "There was an issue emailing your verification code" });
+        } else {
           console.log('Email sent: ' + info.response);
-          res.json({message: 'A verification code was sent to your email at ' + req.body.email});
+          res.json({message: 'We sent a six digit verification code to this email ' + email});
         }
-      })
+      });
+
     }
-   })
+  }
 });
 
 module.exports = router;
+
