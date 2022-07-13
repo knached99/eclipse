@@ -1,4 +1,5 @@
 // Require connection to Mongodb
+const { integerPropType } = require('@mui/utils');
 const mongoose = require('mongoose');
 
 // Users Schema 
@@ -24,6 +25,14 @@ pwd: {
     required: [true, 'your password is required'],
     unique: false,
 },
+verificationCode: {
+    type: Number,
+    required: true
+},
+verified: {
+    type: Boolean,
+    required: true
+}
 });
 
 // Export the userSchema 
