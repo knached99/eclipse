@@ -6,6 +6,7 @@ import {useFormik} from "formik";
 import * as Yup from 'yup';
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon, CheckCircleIcon } from '@heroicons/react/outline'
+import Modal from '../../../components/modal';
 
 function ForgotPassword() {
   const [error, setError] = useState(null);
@@ -177,6 +178,7 @@ function ForgotPassword() {
         </div>
       </Dialog>
     </Transition.Root>
+    <Modal title="Initiating account recovery request..." loading={loading ? true : false}/>
     </>
   )
 }

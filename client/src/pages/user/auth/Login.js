@@ -8,27 +8,32 @@ import {useFormik} from "formik";
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon, CheckCircleIcon } from '@heroicons/react/outline'
 import * as Yup from 'yup';
+import Modal from '../../../components/modal';
 
 function Login() {
   // States
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [open, setOpen] = useState(true);
-  const cancelButtonRef = useRef(null)
+  const cancelButtonRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   // Login onSubmit
   const onSubmit = async(values)=>{
     setError(null);
-   
+    setLoading(true);
     const response = await axios
     .post('http://localhost:5000/api/v1/login', values)
     .catch((err)=>{
       if(err && err.response)
+      setLoading(false);
       setError(err.response.data.message);
       setSuccess(null);
       setOpen(true);
     });
     if(response){
+      setError(null);
+      setLoading(false);
       setSuccess(response.data.message);
     }
   };
@@ -207,6 +212,7 @@ function Login() {
         </div>
       </Dialog>
     </Transition.Root>
+    <Modal title="Authenticating" loading={loading ? true : false}/>
     </>
   )
 }

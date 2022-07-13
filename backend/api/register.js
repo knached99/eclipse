@@ -38,7 +38,7 @@ router.post("/register", async (req, res) => {
   let mailOptions = {
     from: 'f73748fdfbd962@inbox.mailtrap.io',
     to: req.body.email,
-    subject: 'Account Verificatio',
+    subject: 'Account Verification',
     text: 'Hey,' + req.body.fName + ', thank you for creating an account with us! To fully setup your account you must enter this verification code: ' + verificationCode
   };
   
