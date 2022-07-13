@@ -11,9 +11,10 @@ import * as Yup from 'yup';
 function CreateAccount() {
   const [success, setSuccess] = useState(null);
   const [errors, setErrors] = useState(null);
-  const [loading, setLoading] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(true)
   const cancelButtonRef = useRef(null)
+  
   //const [flashMsg, setFlashMsg] = useState(null);
   const validationSchema =  Yup.object({
     fName: Yup.string().required('your first name is required').min(3, 'your first name must contain at least 3 characters'),
@@ -25,11 +26,11 @@ function CreateAccount() {
 
   const onSubmit = async(values)=>{
     const {retypePwd, ...data} = values;
-
+     setLoading(true);
     const response = await axios
     .post('http://localhost:5000/api/v1/register', data) 
     .catch((err)=>{
-      setLoading(true);
+     
       if(err && err.response) setErrors(err.response.data.message);
       setLoading(false);
       setSuccess(null);
@@ -37,7 +38,7 @@ function CreateAccount() {
     });
     if(response && response.data){
       setErrors(null);
-      setLoading(true);
+      setLoading(false);
       setSuccess(response.data.message);
       formik.resetForm();
     }
@@ -143,14 +144,16 @@ function CreateAccount() {
 
 
               { !success && loading && <Button block disabled className="mt-4">
-              <img src="https://mygrant.ors.hawaii.edu/rCOI/images/loading.gif" style={{width: 30, height: 30, margin: 5}} /> 
-                 
+              <svg className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
+                 </svg>
+                  Loading...
                 </Button>
-                }: {!success && !loading &&
+                }
+           
                  <Button type="submit" block className="mt-4" disabled={!(formik.isValid && formik.dirty)}>
                 Create your account
               </Button>
-                }
+                
                  
                 
               <hr className="my-8" />
@@ -211,8 +214,16 @@ function CreateAccount() {
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                     {!success &&  <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />}
-                     {!errors && <CheckCircleIcon className="h-6 text-green-500" aria-hidden="true"/>}
+                    {! success && 
+                       <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                      <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" /> 
+                      </div>
+                      }
+                      {!errors &&  
+                       <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                      <CheckCircleIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
+                      </div>
+                       }
                     </div>
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                       <Dialog.Title as="h3" className="text-lg leading-6 font-black text-gray-900">

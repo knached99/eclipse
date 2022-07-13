@@ -1,7 +1,6 @@
 import React, { useEffect, useState, Fragment, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import axios from "axios";
-
 import { Label, Input, Button } from '@windmill/react-ui'
 import {useFormik} from "formik";
 import * as Yup from 'yup';
@@ -12,9 +11,11 @@ function ForgotPassword() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [open, setOpen] = useState(true);
+  const [loading, setLoading] = useState(false);
   const cancelButtonRef = useRef(null)
   const onSubmit = async(values)=>{
     setError(null);
+    setLoading(true);
     const response = await axios 
     .post('http://localhost:5000/api/v1/forgotpwd', values)
     .catch((err)=>{
@@ -22,8 +23,10 @@ function ForgotPassword() {
       setError(err.response.data.message);
       setSuccess(null);
       setOpen(true);
+      setLoading(false);
     });
     if(response){
+      setLoading(false);
       setSuccess(response.data.message);
     }
 
@@ -76,10 +79,12 @@ function ForgotPassword() {
                 <Input className="mt-1" style={formik.touched.email && formik.errors.email ? {color: '#f71665', borderColor: '#f71665', borderWidth: 2}: null} type="email" placeholder="Enter your email" name="email" onChange={formik.handleChange}  value={formik.values.email} onBlur={formik.handleBlur}/>
                 {formik.touched.email && formik.errors.email ? <span style={{color: '#f71665'}}>{formik.errors.email}</span>: null }
               </Label>
-
-              {/*<Button tag={Link} to="/login" block className="mt-4">
-                Recover password
-              </Button> */}
+              { loading  && !success && <Button disabled block>
+                <svg className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
+                 </svg>
+                  Loading...
+              </Button> 
+              }
               <Button type="submit" block className="mt-4" disabled={!(formik.isValid && formik.dirty)}>Recover Password</Button>
               <p className="mt-4">
                 <Link
@@ -127,10 +132,16 @@ function ForgotPassword() {
               <Dialog.Panel className="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                      {!success && <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />}
-                     {!error && <CheckCircleIcon className="h-6 w-6 text-green-500" aria-hidden="true"/>}
-                    </div>
+                     {! success && 
+                       <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                      <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" /> 
+                      </div>
+                      }
+                      {! error &&  
+                       <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                      <CheckCircleIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
+                      </div>
+                       }
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                       <Dialog.Title as="h3" className="text-lg leading-6 font-black text-gray-900">
                        {!success && 'Password Reset Error '}
