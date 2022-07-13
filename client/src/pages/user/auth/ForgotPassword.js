@@ -7,11 +7,13 @@ import * as Yup from 'yup';
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon, CheckCircleIcon } from '@heroicons/react/outline'
 import Modal from '../../../components/modal';
+import AuthModal from '../../../components/AuthModal';
 
 function ForgotPassword() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [open, setOpen] = useState(true);
+  const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const cancelButtonRef = useRef(null)
   const onSubmit = async(values)=>{
@@ -24,11 +26,13 @@ function ForgotPassword() {
       setError(err.response.data.message);
       setSuccess(null);
       setOpen(true);
+      setShow(false);
       setLoading(false);
     });
     if(response){
       setLoading(false);
       setSuccess(response.data.message);
+      setShow(true);
     }
 
   }
@@ -80,12 +84,7 @@ function ForgotPassword() {
                 <Input className="mt-1" style={formik.touched.email && formik.errors.email ? {color: '#f71665', borderColor: '#f71665', borderWidth: 2}: null} type="email" placeholder="Enter your email" name="email" onChange={formik.handleChange}  value={formik.values.email} onBlur={formik.handleBlur}/>
                 {formik.touched.email && formik.errors.email ? <span style={{color: '#f71665'}}>{formik.errors.email}</span>: null }
               </Label>
-              { loading  && !success && <Button disabled block>
-                <svg className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
-                 </svg>
-                  Loading...
-              </Button> 
-              }
+             
               <Button type="submit" block className="mt-4" disabled={!(formik.isValid && formik.dirty)}>Recover Password</Button>
               <p className="mt-4">
                 <Link
@@ -178,7 +177,10 @@ function ForgotPassword() {
         </div>
       </Dialog>
     </Transition.Root>
-    <Modal title="Initiating account recovery request..." loading={loading ? true : false}/>
+    <Modal title="Sending Code.." loading={loading ? true : false}/>
+    <AuthModal title="Enter Verification Code" show={show ? true : false} email={formik.values.email} />
+
+    {/* Display this modal to prompt user to enter verification code*/}
     </>
   )
 }
