@@ -6,7 +6,7 @@ const router = express.Router();
 // Initialize node email 
 
 router.post("/register", async (req, res) => {
-  const { fName, lName, email, pwd } = req.body;
+  const { fName, lName, email, pwd, termsAgreement } = req.body;
   let query = {email: email};
   const userExists = await User.findOne(query).catch(
     (err) => {
@@ -19,7 +19,7 @@ router.post("/register", async (req, res) => {
   }
   let verificationCode = Math.floor(100000 + Math.random() * 900000);
   let verified = false;
-  const newUser = new User({ fName, lName, email, pwd, verificationCode, verified});
+  const newUser = new User({ fName, lName, email, pwd, verificationCode, verified, termsAgreement});
   const savedUser = await newUser.save().catch((err) => {
     console.log("Error: ", err);
     res.status(500).json({ error: "Cannot register user at the moment!" });

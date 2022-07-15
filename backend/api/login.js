@@ -28,8 +28,8 @@ router.post("/login", async (req, res) => {
     { id: userWithEmail.id, email: userWithEmail.email },
     process.env.JWT_SECRET
   );
-
-  res.json({ message: "Welcome Back!", token: jwtToken });
+    res.json({message: 'You are logged in as ' + email});
+//  res.json({ message: "Welcome Back!", token: jwtToken });
 });
 
 module.exports = router;

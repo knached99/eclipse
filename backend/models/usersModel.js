@@ -31,6 +31,10 @@ verificationCode: {
 verified: {
     type: Boolean,
     required: true
+},
+termsAgreement:{
+    type: Boolean,
+    required: true
 }
 });
 

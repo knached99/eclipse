@@ -23,7 +23,8 @@ function CreateAccount() {
     lName: Yup.string().required('your first name is required').min(3, 'your last name must contain at least 3 characters'),
     email: Yup.string().required('your email is required').matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'you entered an invalid email'),
     pwd: Yup.string().required('your password is required').min(8, ({min, value})=> `${min - value.length} characters remaining`).matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/, 'Your password is not strong enough'),
-    retypePwd: Yup.string().required('You must retype your password').oneOf([Yup.ref('pwd')], 'both passwords must match') 
+    retypePwd: Yup.string().required('You must retype your password').oneOf([Yup.ref('pwd')], 'both passwords must match'),
+    termsAgreement: Yup.bool().oneOf([true], 'Terms agreement must be accepted')
   });
 
   const onSubmit = async(values)=>{
@@ -51,7 +52,8 @@ function CreateAccount() {
       fName: '',
       lName: '',
       email: '',
-      pwd: ''
+      pwd: '',
+      termsAgreement: false
     },
     validateOnBlur: true,
     onSubmit,
@@ -122,11 +124,14 @@ function CreateAccount() {
               </Label>
 
               <Label className="mt-6" check>
-                <Input type="checkbox" />
-                <span className="ml-2">
-                  I agree to the <span className="underline">privacy policy</span>
-                </span>
+                <Input type="checkbox" name="termsAgreement" style={formik.touched.termsAgreement && formik.errors.termsAgreement ? {borderColor: '#f71665', color: '#f71665', borderWidth: 2} : null} onChange={formik.handleChange} value={true} onBlur={formik.handleBlur} />
+                {formik.touched.termsAgreement && formik.errors.termsAgreement ? <span style={{color: '#f71665'}}>{formik.errors.termsAgreement}</span> : null}
+
+
               </Label>
+              <span className="ml-2 dark:text-white">
+                  I agree to the <span className="underline"><a href="#">privacy policy</a></span>
+                </span>
 
 
               { !success && loading && <Button block disabled className="mt-4">
