@@ -1,13 +1,15 @@
 const express = require("express");
 const User = require("../models/usersModel");
+const OtpVerification = require("../models/userOtpModal");
+
 const nodemailer = require('nodemailer');
 const router = express.Router();
 
 
 router.post('/forgotpwd', async(req, res)=>{
   const {email} = req.body;
-
-  const userExists = await User.findOne({email : email}).catch((err)=>{
+  let query = {email: email};
+  const userExists = await User.findOne(query).catch((err)=>{
     console.log('QUERY ERROR ' + err);
   });
 

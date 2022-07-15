@@ -48,7 +48,7 @@ router.post("/register", async (req, res) => {
       res.status(500).json({ error: "There was an issue emailing your verification code" });
     } else {
       console.log('Email sent: ' + info.response);
-      res.json({message: 'Your account was created but you must verify your code to continue. We sent your verification code to ' + req.body.email});
+      res.json({message: 'Your account was created but you must verify your email to continue. We sent your verification code to ' + req.body.email});
     }
   });
 }});

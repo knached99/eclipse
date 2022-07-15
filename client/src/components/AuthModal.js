@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 import axios from "axios";
 
 function AuthModal(props) {
-    const email = props.email;
     const [open, setOpen] = useState(true)
     const cancelButtonRef = useRef(null)
     const [loading, setLoading] = useState(false);
@@ -38,7 +37,7 @@ function AuthModal(props) {
         validationOnBlur: true, 
         onSubmit, 
         validationSchema: Yup.object({
-            code: Yup.string().required('Verification code is required').min(6, 'verification code is six digits long').max(6, 'verification code is six digits long')
+            code: Yup.string().required('Verification code is required').min(6, ({min, value})=> `${min - value.length} numbers remaining`).max(6, 'verification code is six digits long'),
         })
     });
   return (
@@ -81,6 +80,7 @@ function AuthModal(props) {
                             <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">
                                 {props.title}
                             </h1>
+                            <p className="m-4 text-lg text-black dark:text-green-300">We sent a verification code to {props.email} </p>
                             {!success &&  <p className="m-4 font-bold text-red-500">{error}</p>}
                             {!error && <p className="m-4 font-bold text-green-500">{success}</p>}
                             <Label>
@@ -88,7 +88,7 @@ function AuthModal(props) {
                            <Input className="mt-1" style={formik.touched.code && formik.errors.code ? {color: '#f71665', borderColor: '#f71665', borderWidth: 2}: null}  placeholder="Enter your verification code" name="code" onChange={formik.handleChange}  value={formik.values.code} onBlur={formik.handleBlur}/>
                            {formik.touched.code && formik.errors.code ? <span style={{color: '#f71665'}}>{formik.errors.code}</span>: null }
                           </Label>
-                          <input type="hidden" name="email" value={email} />
+                          <Input type="hidden" name="email" value={props.email} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
                           <Button type="submit" block className="mt-4" disabled={!(formik.isValid && formik.dirty)}>Verify Code</Button>
                             </form>
                         {/* Form End */}

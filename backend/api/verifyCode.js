@@ -7,7 +7,21 @@ router.post('/verifyCode', async(req, res)=>{
     const {email, code} = req.body;
   
     const getCode = User.findOne({email : email}, function(err, result){
-        console.log(result);
+        console.log(result.verificationCode);
+        if(err){
+            console.log('Query Error ' + err);
+        }
+        else if(getCode){
+           
+            if(code !== result.verificationCode){
+                console.log('Invalid code entered');
+                return res.status(400).json({message: 'Invalid code entered'});
+            }
+            else{
+                console.log('Your code was verified');
+                res.json({message: 'Your code was verified!'});
+            }
+        }
     })
     /*const getCode = User.findOne({email: email}, function(err, result) {
        if(err){

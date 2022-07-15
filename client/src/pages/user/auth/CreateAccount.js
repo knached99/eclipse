@@ -6,7 +6,7 @@ import { GithubIcon, TwitterIcon } from '../../../icons'
 import { Input, Label, Button } from '@windmill/react-ui'
 import {useFormik} from "formik";
 import { Dialog, Transition } from '@headlessui/react'
-import { ExclamationIcon, CheckCircleIcon } from '@heroicons/react/outline'
+import { ExclamationIcon, CheckCircleIcon, QuestionMarkCircleIcon } from '@heroicons/react/outline'
 import Modal from '../../../components/modal';
 import * as Yup from 'yup';
 
@@ -22,7 +22,7 @@ function CreateAccount() {
     fName: Yup.string().required('your first name is required').min(3, 'your first name must contain at least 3 characters'),
     lName: Yup.string().required('your first name is required').min(3, 'your last name must contain at least 3 characters'),
     email: Yup.string().required('your email is required').matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'you entered an invalid email'),
-    pwd: Yup.string().required('your password is required').matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/, 'Your password is not strong enough'),
+    pwd: Yup.string().required('your password is required').min(8, ({min, value})=> `${min - value.length} characters remaining`).matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/, 'Your password is not strong enough'),
     retypePwd: Yup.string().required('You must retype your password').oneOf([Yup.ref('pwd')], 'both passwords must match') 
   });
 
@@ -45,23 +45,7 @@ function CreateAccount() {
       formik.resetForm();
     }
   };
- /* const onSubmit = async (values)=>{
 
-  const {retypePwd, ...data} = values;
-    setLoading(true);
-    const response =  await axios.post('http://localhost:5000/api/v1/register', data).catch((err)=>{
-      if(err && err.response){
-
-       // alert('An unknown error occurred: ', err);
-        console.log('Error ', err);
-        setErrors('Error creating your account');
-      }
-    });
-    if(response && response.data){
-      console.log(response.data.message)
-      setRegister(response.data.message)
-    } 
-  } */
   const formik = useFormik({
     initialValues:{
       fName: '',

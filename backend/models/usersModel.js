@@ -1,5 +1,4 @@
 // Require connection to Mongodb
-const { integerPropType } = require('@mui/utils');
 const mongoose = require('mongoose');
 
 // Users Schema 
