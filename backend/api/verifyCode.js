@@ -13,9 +13,9 @@ router.post('/verifyCode', async(req, res)=>{
         }
         else if(getCode){
            
-            if(code !== result.verificationCode){
+            if(code != result.verificationCode){
                 console.log('Invalid code entered');
-                return res.status(400).json({message: 'Invalid code entered'});
+                res.json({message: 'Invalid code entered'});
             }
             else{
                 console.log('Your code was verified');

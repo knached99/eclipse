@@ -178,7 +178,7 @@ function ForgotPassword() {
       </Dialog>
     </Transition.Root>
     <Modal title="Sending Code.." loading={loading ? true : false}/>
-    <AuthModal title="Enter Verification Code" show={show ? true : false} email={formik.values.email} />
+    <AuthModal title="Enter Verification Code" show={show ? true : false} email={formik.values.email}/>
 
     {/* Display this modal to prompt user to enter verification code*/}
     </>

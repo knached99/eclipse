@@ -11,7 +11,7 @@ function AuthModal(props) {
     const [loading, setLoading] = useState(false);
     const[error, setError] = useState(null);
     const[success, setSuccess] = useState(null);
-
+    const email = props.email;
     const onSubmit= async(values)=>{
         setError(null);
         setLoading(true);
@@ -32,7 +32,7 @@ function AuthModal(props) {
     const formik = useFormik({
         initialValues: {
             code: '', 
-            email: ''
+            email: email
         },
         validationOnBlur: true, 
         onSubmit, 
@@ -81,14 +81,15 @@ function AuthModal(props) {
                                 {props.title}
                             </h1>
                             <p className="m-4 text-lg text-black dark:text-green-300">We sent a verification code to {props.email} </p>
-                            {!success &&  <p className="m-4 font-bold text-red-500">{error}</p>}
-                            {!error && <p className="m-4 font-bold text-green-500">{success}</p>}
+                            {/*!success &&  <p className="m-4 font-bold text-red-500">{error}</p> */}
+                            {!error && <p className="m-4 font-bold text-gray-200">{success}</p>}
                             <Label>
           
                            <Input className="mt-1" style={formik.touched.code && formik.errors.code ? {color: '#f71665', borderColor: '#f71665', borderWidth: 2}: null}  placeholder="Enter your verification code" name="code" onChange={formik.handleChange}  value={formik.values.code} onBlur={formik.handleBlur}/>
                            {formik.touched.code && formik.errors.code ? <span style={{color: '#f71665'}}>{formik.errors.code}</span>: null }
                           </Label>
-                          <Input type="hidden" name="email" value={props.email} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
+
+                          
                           <Button type="submit" block className="mt-4" disabled={!(formik.isValid && formik.dirty)}>Verify Code</Button>
                             </form>
                         {/* Form End */}
