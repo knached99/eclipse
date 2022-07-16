@@ -1,6 +1,6 @@
 const express = require("express");
 const User = require("../models/usersModel");
-const OtpVerification = require("../models/userOtpModal");
+//const OtpVerification = require("../models/userOtpModal");
 
 const nodemailer = require('nodemailer');
 const router = express.Router();

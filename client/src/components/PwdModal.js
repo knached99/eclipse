@@ -4,17 +4,20 @@ import { Label, Input, Button } from '@windmill/react-ui'
 import {useFormik, Formik} from "formik";
 import * as Yup from 'yup';
 import axios from "axios";
-import PwdModal from './PwdModal';
 
-function AuthModal(props) {
+const validationSchema = Yup.object().shape({
+    pwd: Yup.string().required('You must create your new password').min(8, ({min, value})=> `${min - value.length} characters remaining`).matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/, 'Your password is not strong enough'),
+    retypePwd: Yup.string().required('You must retype your password').oneOf([Yup.ref('pwd')], 'both passwords must match'),
+
+});
+
+function PwdModal(props) {
     const [open, setOpen] = useState(true)
     const cancelButtonRef = useRef(null)
     const [loading, setLoading] = useState(false);
     const[error, setError] = useState(null);
     const[success, setSuccess] = useState(null);
     const email = props.email;
-    const [modal, setModal] = useState(null);
-    const [show, setShow] = useState(false);
     /*const onSubmit= async(values)=>{
         setError(null);
         setLoading(true);
@@ -48,7 +51,7 @@ function AuthModal(props) {
   return (
      
      <>
-     <Transition.Root show={props.show} as={Fragment}>
+     <Transition.Root show={open} as={Fragment}>
      <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
        <Transition.Child
          as={Fragment}
@@ -113,28 +116,32 @@ function AuthModal(props) {
                         
                         */}
                         <Formik 
-                        initialValues={{code: '', email: props.email}}
+                        initialValues={{pwd: '', retypePwd: '', email: email}}
+                        validationSchema={validationSchema}
                         onSubmit={async(values)=>{
                           setError(null);
                           setLoading(true);
                           const response = await axios
-                          .post('http://localhost:5000/api/v1/verifyCode', values)
+                          .post('http://localhost:5000/api/v1/updatePwd', values)
                           .catch((err)=>{
                             if(err && err.response){
                               setError(err.response.data.message);
                               setSuccess(null);
                               setLoading(false);
+                              setOpen(false);
                             }
                           });
                           if(response){
                             setLoading(false);
                             setSuccess(response.data.message);
                             setError(null);
-                            if(response.data.message=='Your code was verified!'){
-                               setModal(<PwdModal title="Update your password" show={show ? false : true} email={email}/>);
+                            setOpen(true);
+                            
+                            if(response.data.message == 'Password successfully updated!'){
+                              setOpen(false);
+                              setSuccess(response.data.message);
                               
-                            }  
-
+                            }
                           }
                         }}
                         >
@@ -143,19 +150,26 @@ function AuthModal(props) {
                             <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">
                                 {props.title}
                             </h1>
-                            <p className="m-4 text-lg text-black dark:text-green-300">We sent a verification code to {props.email} </p>
+                            <p className="m-4 text-lg text-black dark:text-gray-400">We're almost done! All you need to do is create your new password! </p>
                             {/*!success &&  <p className="m-4 font-bold text-red-500">{error}</p> */}
                             {!error && <p className="m-4 font-bold text-gray-200">{success}</p>}
-                            <Label>
+                            <Label className="m-3">
           
-                           <Input className="mt-1" style={touched.code && errors.code ? {color: '#f71665', borderColor: '#f71665', borderWidth: 2}: null}  placeholder="Enter your verification code" name="code" onChange={handleChange}  value={values.code} onBlur={handleBlur}/>
-                           {touched.code && errors.code ? <span style={{color: '#f71665'}}>{errors.code}</span>: null }
+                           <Input type="password" className="mt-1" style={touched.pwd && errors.pwd ? {color: '#f71665', borderColor: '#f71665', borderWidth: 2}: null}  placeholder="Type your new password" name="pwd" onChange={handleChange}  value={values.pwd} onBlur={handleBlur}/>
+                           {touched.pwd && errors.pwd ? <span style={{color: '#f71665'}}>{errors.pwd}</span>: null }
                           </Label>
 
+                          <Label className="m-3">
+          
+                        <Input type="password" className="mt-1" style={touched.retypePwd && errors.retypePwd ? {color: '#f71665', borderColor: '#f71665', borderWidth: 2}: null}  placeholder="Retype your new password" name="retypePwd" onChange={handleChange}  value={values.retypePwd} onBlur={handleBlur}/>
+                        {touched.retypePwd && errors.retypePwd ? <span style={{color: '#f71665'}}>{errors.retypePwd}</span>: null }
+                        </Label>
+
                           
-                          <Button type="submit" block className="mt-4" disabled={!(isValid && dirty)}>Verify Code</Button>
+                          <Button type="submit" block className="mt-4" disabled={!(isValid && dirty)}>Update Password</Button>
                             </form>
                           )}
+                        
                             </Formik>
                         {/* Form End */}
                      </div>
@@ -178,9 +192,8 @@ function AuthModal(props) {
        </div>
      </Dialog>
    </Transition.Root>
-   {modal ? modal : null}
    </>
   )
 }
 
-export default AuthModal
+export default PwdModal
