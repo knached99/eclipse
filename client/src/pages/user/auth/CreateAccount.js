@@ -8,13 +8,16 @@ import {useFormik} from "formik";
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon, CheckCircleIcon, QuestionMarkCircleIcon } from '@heroicons/react/outline'
 import Modal from '../../../components/modal';
+import VerifyModal from '../../../components/VerifyModal';
+
 import * as Yup from 'yup';
 
 function CreateAccount() {
   const [success, setSuccess] = useState(null);
   const [errors, setErrors] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
   const cancelButtonRef = useRef(null)
   
   //const [flashMsg, setFlashMsg] = useState(null);
@@ -42,8 +45,10 @@ function CreateAccount() {
     if(response && response.data){
       setErrors(null);
       setLoading(false);
-      setSuccess(response.data.message);
       formik.resetForm();
+      if(response.data.message == 'Account successfully created!'){
+        setOpenModal(true);
+      }
     }
   };
 
@@ -256,6 +261,7 @@ function CreateAccount() {
 
       {/* Loading animation */}
       <Modal title="Creating your account" loading={loading ? true : false} />
+      <VerifyModal title="Verify your account" show={openModal ? true : false} email={formik.values.email} />
     </>
   )
 }

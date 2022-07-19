@@ -24,6 +24,7 @@ router.post("/register", async (req, res) => {
     console.log("Error: ", err);
     res.status(500).json({ error: "Cannot register user at the moment!" });
   });
+  res.status(200).json({message: 'Account successfully created!'});
 // res.json({ message: "Your account was successfully created!" });
   if (savedUser){
   let transporter = nodemailer.createTransport({
@@ -48,7 +49,7 @@ router.post("/register", async (req, res) => {
       res.status(500).json({ error: "There was an issue emailing your verification code" });
     } else {
       console.log('Email sent: ' + info.response);
-      res.json({message: 'Your account was created but you must verify your email to continue. We sent your verification code to ' + req.body.email});
+      res.json({message: 'Your account was created but you must verify your email to continue. We sent your verification code to ' + req.body.email}); 
     }
   });
 }});
