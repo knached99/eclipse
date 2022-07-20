@@ -13,6 +13,7 @@ import VerifyModal from '../../../components/VerifyModal';
 import * as Yup from 'yup';
 
 function CreateAccount() {
+
   const [success, setSuccess] = useState(null);
   const [errors, setErrors] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -41,14 +42,14 @@ function CreateAccount() {
       setLoading(false);
       setSuccess(null);
       setOpen(true);
+      setOpenModal(false);
     });
     if(response && response.data){
       setErrors(null);
       setLoading(false);
-      formik.resetForm();
-      if(response.data.message == 'Account successfully created!'){
-        setOpenModal(true);
-      }
+      //setSuccess(response.data.message);
+      setOpenModal(true);
+      
     }
   };
 

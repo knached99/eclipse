@@ -1,34 +1,57 @@
-const express = require('express');
-const User = require('../models/User');
+const express = require("express");
+const User = require("../models/usersModel");
+const nodemailer = require('nodemailer');
 const router = express.Router();
-// Account registration endpoint 
-app.post('/signup', (request, response)=>{
-    // Hash the password and salt it 10 times
-    bcrypt.hash(request.body.pwd, 10)
-    .then((hashedPassword)=>{
-      // Create a new user instance and save the data
-      const user = new User({
-        email: request.body.email, 
-        pwd: hashedPassword,
-      });
-      // Save the new user 
-      user.save()
-      .then((result)=>{
-        response.status(201).send({
-          // return success message if user was created successfully 
-          message: 'User created successfully',
-          result,
-        });
-      }).catch((error)=>{
-        response.status(500).send({
-          message: 'Error creating user', error
-        });
-      });
-    })
-    .catch((e)=>{
-      response.status(500).send({
-        message: 'Password was not hashed successfully',
-        e,
-      });
-    });
+
+// Initialize node email 
+
+router.post("/register", async (req, res) => {
+  const { fName, lName, email, pwd, termsAgreement } = req.body;
+  let query = {email: email};
+  const userExists = await User.findOne(query).catch(
+    (err) => {
+      console.log("Error: ", err);
+    }
+  );
+
+  if (userExists) {
+    return res.status(409).json({ message: "An account with that email already exists!" });
+  }
+  let verificationCode = Math.floor(100000 + Math.random() * 900000);
+  let verified = false;
+  const newUser = new User({ fName, lName, email, pwd, verificationCode, verified, termsAgreement});
+  const savedUser = await newUser.save().catch((err) => {
+    console.log("Error: ", err);
+    res.status(500).json({ error: "Cannot register user at the moment!" });
   });
+  res.status(200).json({message: 'Account successfully created!'});
+// res.json({ message: "Your account was successfully created!" });
+  if (savedUser){
+  let transporter = nodemailer.createTransport({
+    host: "smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "f73748fdfbd962",
+      pass: "41445c2690e986"
+    }
+  });
+  
+  let mailOptions = {
+    from: 'f73748fdfbd962@inbox.mailtrap.io',
+    to: req.body.email,
+    subject: 'Account Verification',
+    text: 'Hey,' + req.body.fName + ', thank you for creating an account with us! To fully setup your account you must enter this verification code: ' + verificationCode
+  };
+  
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+      res.status(500).json({ error: "There was an issue emailing your verification code" });
+    } else {
+      console.log('Email sent: ' + info.response);
+      res.json({message: 'Your account was created but you must verify your email to continue. We sent your verification code to ' + req.body.email}); 
+    }
+  });
+}});
+
+module.exports = router;

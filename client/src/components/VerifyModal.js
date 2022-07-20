@@ -4,9 +4,13 @@ import { Label, Input, Button } from '@windmill/react-ui'
 import {useFormik, Formik} from "formik";
 import * as Yup from 'yup';
 import axios from "axios";
-import { Redirect } from 'react-router-dom';
+import { Redirect, useLocation } from 'react-router-dom';
+
+
 
 function VerifyModal(props) {
+
+
     const [open, setOpen] = useState(true)
     const cancelButtonRef = useRef(null)
     const [loading, setLoading] = useState(false);
@@ -129,7 +133,7 @@ function VerifyModal(props) {
                             setLoading(false);
                             setSuccess(response.data.message);
                             setError(null);
-                            if(response.data.message=='Your account was verified!'){
+                            if(response.data.message=='Your account is now verified!'){
                               setRedirect(true);
                               
                             }  
@@ -178,7 +182,8 @@ function VerifyModal(props) {
      </Dialog>
    </Transition.Root>
    {modal ? modal : null}
-   {redirect ? <Redirect to="/login" /> : null}
+   {redirect  && <Redirect to={window.location.pathname} />}
+
    </>
   )
 }

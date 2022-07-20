@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Fragment, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import axios from "axios";
 
 import { GithubIcon, TwitterIcon } from '../../../icons'
@@ -9,15 +9,32 @@ import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon, CheckCircleIcon } from '@heroicons/react/outline'
 import * as Yup from 'yup';
 import Modal from '../../../components/modal';
+import VerifyModal from '../../../components/VerifyModal';
 
 function Login() {
+function handleCallbackResponse(response){
+  console.log('ENCODED JWT ID TOKEN: ' + response.credential);
+}
+   //UseEffect for Global Google OAuth 
+ /* useEffect(()=>{
+    google.accounts.id.initialize({
+      client_id: "637499231097-b0jq5g5t0mr9173t40pl36d4lfq4oov8.apps.googleusercontent.com",
+      callback: handleCallbackResponse
+    });
+    google.accounts.id.renderButton(
+      document.getElementById("signInDiv"),
+      {theme: 'outline', size: 'large'}
+    );
+  }, []);  */
+
   // States
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
   const [loading, setLoading] = useState(false);
-
+  const [redirect, setRedirect] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   // Login onSubmit
   const onSubmit = async(values)=>{
     setError(null);
@@ -30,7 +47,14 @@ function Login() {
       setError(err.response.data.message);
       setSuccess(null);
       setOpen(true);
+      if(err.response.data.message=='Your account is not verified'){
+        setOpenModal(true);
+      }
     });
+   
+    
+    
+
     if(response){
       setError(null);
       setLoading(false);
@@ -105,10 +129,12 @@ function Login() {
                 <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
                 Github
               </Button>
-              <Button className="mt-4" block layout="outline">
-                <TwitterIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                Twitter
-              </Button>
+              {/*  <Button className="mt-4" block layout="outline">
+                <img className="w-4 h-4 mr-2" src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-suite-everything-you-need-know-about-google-newest-0.png" />
+                
+                Google
+              </Button>*/}
+              <div id="signInDiv"></div>
 
               <p className="mt-4">
                 <Link
@@ -180,7 +206,7 @@ function Login() {
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                       <Dialog.Title as="h3" className="text-lg leading-6 font-black text-gray-900">
                         {!success && 'Login Error'}
-                        {!error && 'Welcome Back!'}
+                       
                       </Dialog.Title> 
                       <div className="mt-2">
                       {!success && <p className="text-red-400 font-semibold">{error ? error : ""}</p>}
@@ -212,7 +238,10 @@ function Login() {
         </div>
       </Dialog>
     </Transition.Root>
+    {success && <Redirect to="/app/dashboard" /> } 
     <Modal title="Authenticating" loading={loading ? true : false}/>
+    <VerifyModal title="Verify your account" show={openModal ? true : false} email={formik.values.email} />
+
     </>
   )
 }

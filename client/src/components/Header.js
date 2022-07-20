@@ -46,7 +46,7 @@ function Header() {
             </div>
             <Input
               className="pl-8 text-gray-700"
-              placeholder="Search for projects"
+              placeholder="Search under development"
               aria-label="Search"
             />
           </div>
@@ -110,8 +110,8 @@ function Header() {
             >
               <Avatar
                 className="align-middle"
-                src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=aa3a807e1bbdfd4364d1f449eaa96d82"
-                alt=""
+                src="https://i.iheart.com/v3/surl/aHR0cDovL2ltYWdlLmloZWFydC5jb20vaW1hZ2VzL292ZXJyaWRlLzQwNDg3N18zNGU4MGY5Mi1jNGZjLTQ1ZjQtODYwMC0wZjQwZjkzMzcwZTEuanBn?ops=fit%28720%2C720%29&sn=eGtleWJhc2UyMDIxMTExMDqg8VjmGyHtoboAHRN7FTDOu6r2ThtNN0ceP-EqBINj-w%3D%3D&surrogate=1cOXl179JY-syhxYSCX6Q1a_Mcu6UO8d-F4oJzpZf1hcUbJr4aIhxNUBFkD7jx8D1z86im6eTTF-fNLSYAnbWBznXQ-wBBc6NRUc-muwjrH9uNJZ-ZLmfk-vQavl5me8u-vzySmVaokarnFg3SIm-QODGDpSpIUffX9ZNyjFRs08_K1RxINASScSJNvsTJnziopELIjQgRFTwuQGyW_UuUIA0D1xj8J9quvbRBn9qkWKHuBjEn8pmg0qsaQZsxN_oXg%3D"
+                alt="Jordan Davis"
                 aria-hidden="true"
               />
             </button>
@@ -128,9 +128,9 @@ function Header() {
                 <OutlineCogIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                 <span>Settings</span>
               </DropdownItem>
-              <DropdownItem onClick={() => alert('Log out!')}>
+              <DropdownItem tag="a" href="/login">
                 <OutlineLogoutIcon className="w-4 h-4 mr-3" aria-hidden="true" />
-                <span>Log out</span>
+                <span>Logout</span>
               </DropdownItem>
             </Dropdown>
           </li>

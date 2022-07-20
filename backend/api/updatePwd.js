@@ -16,7 +16,7 @@ router.post('/updatePwd', async(req, res)=>{
     }
     else{
         console.log('Unable to update your password');
-        res,json({message: 'Unable to update your password'});
+        res.json({message: 'Unable to update your password'});
     }
     });
 
