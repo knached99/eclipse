@@ -40,7 +40,7 @@ const mongoDBstore = new MongoDBStore({
 })
 app.use(
   session({
-    secret: 'a1s2d3f4g5h6',
+    secret: process.env.SESSION_SECRET,
     name: 'session-id', // cookies name to be put in "key" field in postman
     store: mongoDBstore,
     cookie: {
@@ -63,7 +63,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({
-    message: "🦄🌈✨👋🌎🌍🌏✨🌈🦄",
+    message: "Starting App... ",
   });
 });
 
