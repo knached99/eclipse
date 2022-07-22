@@ -14,18 +14,19 @@ const ForgotPassword = lazy(() => import('./pages/user/auth/ForgotPassword'))
 function App() {
 
 const [user, setUser] =useState("Khaled");
-const providerValue = useMemo(()=>({user, setUser}), [user, setUser]);
+const authUser = useMemo(()=>({user, setUser}), [user, setUser]);
 
   return (
     <>
          <Router>
         <AccessibleNavigationAnnouncer />
         <Switch>
+        <AuthContext.Provider value={authUser}>
           <Route path="/login" component={Login} />
           <Route path="/create-account" component={CreateAccount} />
           <Route path="/forgot-password" component={ForgotPassword} />
           {/* Wrap Provider around all components that needs the user data*/}
-          <AuthContext.Provider value={providerValue}>
+
           <Route path="/app" component={Layout} /> 
           </AuthContext.Provider>
 

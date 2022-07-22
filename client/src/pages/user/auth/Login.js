@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment, useRef } from 'react'
+import React, { useEffect, useState, Fragment, useRef, useMemo, useContext } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import axios from "axios";
 
@@ -11,9 +11,11 @@ import * as Yup from 'yup';
 import Modal from '../../../components/modal';
 import VerifyModal from '../../../components/VerifyModal';
 import Dash from '../dashboard';
+import { AuthContext } from '../../../context/AuthContext';
 
 function Login() {
-
+  
+  const {user, setUser} = useContext(AuthContext);
 
   // States
   const [error, setError] = useState(null);
@@ -46,7 +48,10 @@ function Login() {
     if(response){
       setError(null);
       setLoading(false);
-      setSuccess(JSON.stringify(response));
+      setUser(JSON.stringify(response));
+     // setSuccess(response);
+
+      //setSuccess(JSON.stringify(response));
     }
   };
   // Login Validation 
@@ -227,11 +232,11 @@ function Login() {
       </Dialog>
     </Transition.Root>
       
-    {success && 
+    {user && 
     <Redirect
     to={{
     pathname: "/app/dashboard",
-    state: {success}
+    state: {user}
   }}
 />} 
     <Modal title="Authenticating" loading={loading ? true : false}/>
