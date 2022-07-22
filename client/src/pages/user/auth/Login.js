@@ -48,7 +48,7 @@ function Login() {
     if(response){
       setError(null);
       setLoading(false);
-      setUser(JSON.stringify(response));
+      setUser(response.data);
      // setSuccess(response);
 
       //setSuccess(JSON.stringify(response));
@@ -236,7 +236,7 @@ function Login() {
     <Redirect
     to={{
     pathname: "/app/dashboard",
-    state: {user}
+    //state: {user}
   }}
 />} 
     <Modal title="Authenticating" loading={loading ? true : false}/>

@@ -13,7 +13,7 @@ const ForgotPassword = lazy(() => import('./pages/user/auth/ForgotPassword'))
 
 function App() {
 
-const [user, setUser] =useState("Khaled");
+const [user, setUser] =useState(null);
 const authUser = useMemo(()=>({user, setUser}), [user, setUser]);
 
   return (
