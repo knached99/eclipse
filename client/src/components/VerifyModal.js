@@ -146,9 +146,12 @@ function VerifyModal(props) {
                             <h1 className="mb-4 text-3xl font-black text-gray-700 dark:text-white">
                                 {props.title}
                             </h1>
-                            <p className="m-4 text-lg text-black dark:text-green-300">We sent a verification code to {props.email} </p>
+                            <p className="m-4 text-lg text-black dark:text-gray-300">{props.desc} <span className="text-black dark:text-purple-400">{props.email}</span> </p>
                             {/*!success &&  <p className="m-4 font-bold text-red-500">{error}</p> */}
-                            {!error && <p className="m-4 font-bold text-gray-200">{success}</p>}
+                            {!error && <p className="m-4 font-bold text-red-400">{success}</p>}
+                            {!success && loading && <> <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif" style={{width: 50, height: 50}} />
+                            <p className='m-3 text-dark font-semibold dark:text-white'>Verifying...</p></>
+                            }
                             <Label>
           
                            <Input className="mt-1" style={touched.code && errors.code ? {color: '#f71665', borderColor: '#f71665', borderWidth: 2}: null}  placeholder="Enter your verification code" name="code" onChange={handleChange}  value={values.code} onBlur={handleBlur}/>

@@ -10,22 +10,10 @@ import { ExclamationIcon, CheckCircleIcon } from '@heroicons/react/outline'
 import * as Yup from 'yup';
 import Modal from '../../../components/modal';
 import VerifyModal from '../../../components/VerifyModal';
+import Dash from '../dashboard';
 
 function Login() {
-function handleCallbackResponse(response){
-  console.log('ENCODED JWT ID TOKEN: ' + response.credential);
-}
-   //UseEffect for Global Google OAuth 
- /* useEffect(()=>{
-    google.accounts.id.initialize({
-      client_id: "637499231097-b0jq5g5t0mr9173t40pl36d4lfq4oov8.apps.googleusercontent.com",
-      callback: handleCallbackResponse
-    });
-    google.accounts.id.renderButton(
-      document.getElementById("signInDiv"),
-      {theme: 'outline', size: 'large'}
-    );
-  }, []);  */
+
 
   // States
   const [error, setError] = useState(null);
@@ -58,7 +46,7 @@ function handleCallbackResponse(response){
     if(response){
       setError(null);
       setLoading(false);
-      setSuccess(response.data.message);
+      setSuccess(JSON.stringify(response));
     }
   };
   // Login Validation 
@@ -238,9 +226,16 @@ function handleCallbackResponse(response){
         </div>
       </Dialog>
     </Transition.Root>
-    {success && <Redirect to="/app/dashboard" /> } 
+      
+    {success && 
+    <Redirect
+    to={{
+    pathname: "/app/dashboard",
+    state: {success}
+  }}
+/>} 
     <Modal title="Authenticating" loading={loading ? true : false}/>
-    <VerifyModal title="Verify your account" show={openModal ? true : false} email={formik.values.email} />
+    <VerifyModal title="Verify your account" desc="You have not yet verified your account, please check the code we sent to your email" show={openModal ? true : false} email={formik.values.email} />
 
     </>
   )

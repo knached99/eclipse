@@ -1,6 +1,7 @@
 import React, { lazy} from 'react'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import AccessibleNavigationAnnouncer from './components/AccessibleNavigationAnnouncer'
+import Dash from './pages/user/dashboard'
 
 
 const Layout = lazy(() => import('./containers/Layout'))
@@ -21,7 +22,7 @@ function App() {
           <Route path="/create-account" component={CreateAccount} />
           <Route path="/forgot-password" component={ForgotPassword} />
     
-          <Route path="/app" component={Layout} /> 
+          <Route path="/app" render={(props) => <Dash {...props}/>}component={Layout} /> 
 
           <Redirect exact from="/" to="/login" /> 
         </Switch>

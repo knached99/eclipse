@@ -262,7 +262,7 @@ function CreateAccount() {
 
       {/* Loading animation */}
       <Modal title="Creating your account" loading={loading ? true : false} />
-      <VerifyModal title="Verify your account" show={openModal ? true : false} email={formik.values.email} />
+      <VerifyModal title="Verify your account" desc="You're almost done! Just need to verify your account to continue. We sent the verification code to " show={openModal ? true : false} email={formik.values.email} />
     </>
   )
 }
