@@ -13,7 +13,7 @@ function Dash() {
   return (
     <>
      
-      <PageTitle>Welcome Back {Object.entries(user)}!
+      <PageTitle>Welcome Back {Object.values(user)}!
         This dashboard is currently under construction 
         <img className="m-3 p-4" src="https://cdn2.iconfinder.com/data/icons/whcompare-isometric-web-hosting-servers/50/website-under-construction-512.png" />
       </PageTitle>
