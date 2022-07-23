@@ -11,8 +11,10 @@ import {
   OutlineLogoutIcon,
 } from '../icons'
 import { Avatar, Badge, Input, Dropdown, DropdownItem, WindmillContext } from '@windmill/react-ui'
+import { AuthContext } from '../context/AuthContext'
 
 function Header() {
+  const {user, setUser} = useContext(AuthContext);
   const { mode, toggleMode } = useContext(WindmillContext)
   const { toggleSidebar } = useContext(SidebarContext)
 
@@ -121,8 +123,12 @@ function Header() {
               onClose={() => setIsProfileMenuOpen(false)}
             >
               <DropdownItem tag="a" href="#">
+                <span className='text-gray-800 dark:text-white font-semibold'>{user.email}</span>
+              </DropdownItem>
+
+              <DropdownItem tag="a" href="#">
                 <OutlinePersonIcon className="w-4 h-4 mr-3" aria-hidden="true" />
-                <span>Profile</span>
+                <span>Profile </span>
               </DropdownItem>
               <DropdownItem tag="a" href="#">
                 <OutlineCogIcon className="w-4 h-4 mr-3" aria-hidden="true" />
