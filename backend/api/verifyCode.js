@@ -1,43 +1,31 @@
 const express = require("express");
 const User = require("../models/usersModel");
-const nodemailer = require('nodemailer');
 const router = express.Router();
+
 
 router.post('/verifyCode', async(req, res)=>{
     const {email, code} = req.body;
-  
-    const getCode = User.findOne({email : email}, function(err, result){
-        console.log(result.verificationCode);
-        if(err){
-            console.log('Query Error ' + err);
-        }
-        else if(getCode){
+    
+    const getCode = await User.findOne({email: email});
+    console.log(getCode.optCode);
+    if(code != getCode.optCode){
+        console.log('Incorrect verification code');
+        res.json({message: 'Incorrect verification code entered, check your email and try again'});
+    }
+    else{
+        const newUser = new User({email});
+        const updateStatus = await newUser.updateOne({email: email}, {$set: {otpVerified: true}}).catch((err)=>{
+            console.log('Update Query Error ' + err);
+            res.json({message: 'Something went wrong'});
+        }).then((response)=>{
+            console.log(response);
+            console.log('The account ' + email  + " is verified!");
+            res.json({message: 'Your account is now verified!'});
+        });
+       /* if(updateStatus){
            
-            if(code != result.verificationCode){
-                console.log('Invalid code entered');
-                res.json({message: 'Invalid code entered'});
-            }
-            else{
-                console.log('Your code was verified');
-                res.json({message: 'Your code was verified!'});
-            }
-        }
-    })
-    /*const getCode = User.findOne({email: email}, function(err, result) {
-       if(err){
-        console.log('Database Error' + err);
-        return res.status(400).json({message: 'SQL Query Error'});
-       }
-       else if(getCode){
-        verificationCode = result.verificationCode;
-        if(code !== verificationCode){
-            return res.status(400).json({message: 'Invalid code entered'});
-        }
-        else{
-            res.json({message: 'Your code was verified'});
-        }
-       }
-      }); */
+        } */
+    }
 });
 
 module.exports = router;

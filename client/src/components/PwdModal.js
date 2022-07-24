@@ -139,9 +139,7 @@ function PwdModal(props) {
                             setError(null);
                             setOpen(true);
                             
-                            if(response.data.message == 'Password successfully updated!'){
-                              //setOpen(false);
-                              //setSuccess(response.data.message);
+                            if(response.data.message == 'Your password has been updated!'){
                               setRedirect(true);
                               
                             }
@@ -195,7 +193,7 @@ function PwdModal(props) {
        </div>
      </Dialog>
    </Transition.Root>
-   {redirect ? <Redirect to="/login"/> : null}
+   {redirect && <Redirect to="/login"/>}
    </>
   )
 }

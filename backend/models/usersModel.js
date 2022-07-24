@@ -24,18 +24,31 @@ pwd: {
     required: [true, 'your password is required'],
     unique: false,
 },
-verificationCode: {
+acctVerificationCode: {
     type: Number,
     required: true
 },
-verified: {
+acctVerified: {
     type: Boolean,
-    required: true
+    required: true,
+    default: false,
 },
 termsAgreement:{
     type: Boolean,
     required: true
+},
+optCode:{
+    type: Number,
+    required: false,
+    default: null
+
+},
+otpVerified:{
+    type: Boolean,
+    required: false,
+    default: false
 }
+
 });
 
 // Export the userSchema 

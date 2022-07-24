@@ -17,14 +17,13 @@ router.post('/register', async(req, res)=>{
     return res.status(409).json({message: 'An account with the email ' + email + " already exists"});
   }
   // Else if user does not exist 
-  let verificationCode = Math.floor(100000 + Math.random() * 900000);
-  let verified = false; 
-  const newUser = new User({fName, lName, email, pwd, verificationCode, verified, termsAgreement});
+  let acctVerificationCode = Math.floor(100000 + Math.random() * 900000);
+  const newUser = new User({fName, lName, email, pwd, acctVerificationCode, termsAgreement});
   
   // Hash Password
   bcrypt.hash(pwd, 10, async (err, hash) => {
     if (err)
-      return res.status(400).json({ msg: 'error while saving the password' })
+      return res.status(400).json({ message: 'error while hashing the password' })
 
     newUser.pwd = hash
     const savedUser = await newUser.save().catch((err)=>{

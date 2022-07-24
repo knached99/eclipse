@@ -19,7 +19,7 @@ router.post("/register", async (req, res) => {
   }
   let verificationCode = Math.floor(100000 + Math.random() * 900000);
   let verified = false;
-  const newUser = new User({ fName, lName, email, pwd, verificationCode, verified, termsAgreement});
+  const newUser = new User({ fName, lName, email, pwd, acctVerificationCode, acctVerified, termsAgreement});
   const savedUser = await newUser.save().catch((err) => {
     console.log("Error: ", err);
     res.status(500).json({ error: "Cannot register user at the moment!" });

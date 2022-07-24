@@ -20,7 +20,7 @@ router.post('/forgotpwd', async(req, res)=>{
     // Define new user Object 
     const newUser = new User ({email});
     let code = Math.floor(100000 + Math.random() * 900000);
-    const updateCode = await newUser.updateOne({email: email}, {$set: {verificationCode: code}}).catch((err)=>{
+    const updateCode = await newUser.updateOne({email: email}, {$set: {acctVerificationCode: code}}).catch((err)=>{
       console.log('Update Query Error ' + err);
       return res.status(409).json({message: 'Something went wrong'});
       

@@ -18,7 +18,7 @@ router.post('/login', async (req, res) => {
   const matchPassword = await bcrypt.compare(pwd, user.pwd)
   if (matchPassword) {
 
-    if(user.verified== false){
+    if(user.acctVerified==false){
       return res.status(400).json({message: 'Your account is not verified'});
     }
     else{

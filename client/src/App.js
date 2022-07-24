@@ -26,11 +26,12 @@ const authUser = useMemo(()=>({user, setUser}), [user, setUser]);
           <Route path="/create-account" component={CreateAccount} />
           <Route path="/forgot-password" component={ForgotPassword} />
           {/* Wrap Provider around all components that needs the user data*/}
-          {authUser ? <Route path="/app" component={Layout} /> : <Route path="/login" /> }
-          
+          {/* Protected Route if session is active */}
+          {authUser && <Route path="/app" component={Layout}/>}
+          <Redirect exact from="/" to="/login" /> 
           </AuthContext.Provider>
 
-          <Redirect exact from="/" to="/login" /> 
+ 
         </Switch>
       </Router> 
     
